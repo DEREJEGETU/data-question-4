@@ -58,6 +58,8 @@ https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-zi
 **balance due amount** - the dollar amount of balance due (liability exceeded withholding and payments). </br>
 **refund count** - the number of returns with refunds (withholding and payments exceeded tax liability). </br>
 **refund amount** - the dollar amount of refunds. </br>
+**paid preparer return count** - the number of returns with a paid tax return preparer. </br>
+
 
 #### THE FOLLOWING 10 are ALL components of AGI - i.e. along with other items, they are summed to derive AGI
     # salary & wages             
