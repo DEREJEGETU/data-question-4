@@ -1,0 +1,13 @@
+library(readxl)
+library(tidyverse)
+
+column_names <- c('zip_code','AGI_range','return_count','joint_return_count','paid_preparer_return_count','exemption_count','dependent_count','AGI_amount','salary_&_wages_count','salary_&_wages_amount','taxable_interest_count','taxable_interest_amount','ordinary_dividends_count','ordinary_dividends_amount','','','business_income_count','business_income_amount','farm_income_count','net_capital_gain_count','net_capital_gain_amount','taxable_IRA_distributions_count','taxable_IRA_distributions_amount','pension_&_annuity_income_count','pension_&_annuity_income_amount','unemployment_income_count','unemployment_income_amount','social_security_count','social_security_amount','','','itemized_deductions_count','itemized_deductions_amount','state_&_local_income_tax_count','state_&_local_income_tax_amount','state_&_local_sales_tax_count','state_&_local_sales_tax_amount','','','taxes_paid_count','taxes_paid_amount','mortgage_interest_count','mortgage_interest_amount','charitable_contributions_count','charitable_contributions_amount','taxable_income_count','taxable_income_amount','total_tax_credits_count','total_tax_credits_amount','','','','','','','','','earned_income_credit_count','earned_income_credit_amount','excess_earned_income_credit_count','excess_earned_income_credit_amount','','','','','tax_liability_count','tax_liability_amount','balance_due_count','balance_due_amount','refund_count','refund_amount')
+irs_data_2011_xl <- read_excel('data/IRS_data/11zp43tn.xls', range = cell_rows(7:4725), col_names = column_names)
+
+irs_data_2011_df <- data.frame(irs_data_2011_xl) %>%
+  select(-contains('X__')) %>%
+  filter(zip_code != '')
+  
+irs_data_2011_df$AGI_range[is.na(irs_data_2011_df$AGI_range)] <- "Total"
+View(irs_data_2011_df)
+
