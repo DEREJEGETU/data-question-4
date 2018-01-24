@@ -61,11 +61,15 @@ library(purrr)
 ##---Replace remaining cells that are NA with the value 'Total':
   IRS_2011[is.na(IRS_2011)] <- "Total"
   
+  
+##---Add the year column with value '2011':
+  IRS_2012$Year <- "2011"    
+  
+  
 ##---Review the results to test IRS_2011:
   View(IRS_2011)
   
 
-##----------------------------------------------------------------------------------------------------------------------------------------------------------------  
 ##IRS_2012----------------------------------------------------------------------------------------------------------------------------------------------------------------  
   
 ##---Read in 2012 IRS data set and remove top 6 rows and footnotes
@@ -88,11 +92,13 @@ library(purrr)
 ##---Replace remaining cells that are NA with the value 'Total':
   IRS_2012[is.na(IRS_2012)] <- "Total"
   
+##---Add the year column with value '2012':
+  IRS_2012$Year <- "2012"   
+  
 ##---Review the results to test IRS_2012:
   View(IRS_2012)  
   
   
-##----------------------------------------------------------------------------------------------------------------------------------------------------------------  
 ##IRS_2013----------------------------------------------------------------------------------------------------------------------------------------------------------------  
   
 ##---Read in 2013 IRS data set and remove top 6 rows and footnotes
@@ -113,12 +119,15 @@ library(purrr)
   
 ##---Replace remaining cells that are NA with the value 'Total':
   IRS_2013[is.na(IRS_2013)] <- "Total"
+
+##---Add the year column with value '2013':
+  IRS_2013$Year <- "2013"    
+  
   
 ##---Review the results to test IRS_2013:
   View(IRS_2013)    
   
   
-##----------------------------------------------------------------------------------------------------------------------------------------------------------------  
 ##IRS_2014----------------------------------------------------------------------------------------------------------------------------------------------------------------  
   
   
@@ -141,12 +150,13 @@ library(purrr)
 ##---Replace remaining cells that are NA with the value 'Total':
   IRS_2014[is.na(IRS_2014)] <- "Total"
   
+##---Add the year column with value '2014':
+  IRS_2014$Year <- "2014"    
   
 ##---Review the results to test IRS_2014:
   View(IRS_2014) 
 
   
-##----------------------------------------------------------------------------------------------------------------------------------------------------------------  
 ##IRS_2015----------------------------------------------------------------------------------------------------------------------------------------------------------------  
   
     
@@ -170,6 +180,9 @@ library(purrr)
 ##---Replace remaining cells that are NA with the value 'Total':
   IRS_2015[is.na(IRS_2015)] <- "Total"
   
+
+##---Add the Year column with value '2015':
+  IRS_2015$Year <- "2015"  
   
 ##---Review the results to test IRS_2015:
   View(IRS_2015)   
