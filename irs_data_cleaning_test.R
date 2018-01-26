@@ -67,7 +67,16 @@ education_df <- data.frame(education_xl) %>%
   merge(crosswalk_df) %>%
   mutate(n_bsc_and_below = round(as.numeric(pct_bsc_and_below)/100 * valid_tests), n_prof_and_above = round(as.numeric(pct_prof_adv)/100 * valid_tests)) %>%
   select(county, everything(), -system) %>%
-  replace(. == "*"| . == "**", NA) 
+  replace(. == "*"| . == "**", NA) %>%
+  map_at(.at = c(6:18), as.numeric) %>%
+  as.data.frame() # not sure why, but I have to convert back to dataframe...
+
+##############READ/CLEAN GRADUATION###################
+graduation_xl <- read_excel('data/data_graduation_cohort_2015-16.xlsx', sheet = 'Graduation Cohort Data')
+
+graduation_df <- data.frame(graduation_xl) %>%
+  select(system = District.ID, district_name = District.Name, school_name = School.Name, graduate_count = X2015.Graduate.Count, cohort_count = X2015.Cohort.Count, graduation_rate = X2015.Graduation.Rate) %>%
+  merge(crosswalk_df)
 
 
 ###########ROLLUP IRS 2015 TO COUNTY LEVEL##############
@@ -78,9 +87,18 @@ IRS_2015_by_county_df <- IRS_data_by_year_df %>%
   merge(zips_df %>% group_by(county) %>% select(county, county_lat, county_lon) %>% distinct())
   
 #############ROLLUP EDUCATION 2015 TO COUNTY LEVEL################
-# education_by_county_2015_df <- 
-#   education_df %>%
-#   filter(subgroup == 'All Students', grade == 'All Grades') %>%
-#   group_by(county, subject) %>%
-#   summarize_at(vars(valid_tests:n_prof_and_above), sum)
-#   View()
+education_by_county_2015_df <- 
+  education_df %>%
+  filter(subgroup == 'All Students', grade == 'All Grades') %>%
+  group_by(county, subject) %>%
+  summarize_at(vars(valid_tests:n_prof_and_above), sum)
+
+
+
+#############ROLLUP GRADUATION TO COUNTY LEVEL##############
+grad_by_county_df <- graduation_df %>%
+  filter(school_name == "All Schools") %>%
+  group_by(county) %>%
+  summarize_at(vars(graduate_count, cohort_count), sum) %>%
+  mutate(county_grad_rate = graduate_count/cohort_count*100)
+  
