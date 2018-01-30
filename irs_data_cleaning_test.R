@@ -6,9 +6,12 @@ zips_xl <- read_excel('data/zip_code_database.xlsx')
 
 zips_df <- data.frame(zips_xl) %>%
   select(zip_code = zip, state, county, latitude, longitude) %>%
-  filter(state == 'TN') %>%
+  lapply(function(x) if(is.character(x)) tolower(x) else x) %>%
+  data.frame() %>%
+  filter(state == 'tn') %>%
   select(-state) %>%
   group_by(county) %>%
+  replace_na(replace = list(county = 'obion county')) %>%
   mutate(county_lat = (mean(latitude))) %>%
   mutate(county_lon = (mean(longitude)))
 
@@ -16,7 +19,9 @@ zips_df <- data.frame(zips_xl) %>%
 crosswalk_xl <- read_excel('data/data_district_to_county_crosswalk.xls')
 
 crosswalk_df <- data.frame(crosswalk_xl) %>%
-  select(county = County.Name, system = District.Number)
+  select(county = County.Name, system = District.Number) %>%
+  lapply(function(x) if(is.character(x)) tolower(x) else x) %>%
+  data.frame()
 
 ###########READ/CLEAN IRS##################
 # Create vectors of better column names, leaving blanks for those we don't want to keep (why, yes -- there probably IS a better way...).
@@ -39,7 +44,9 @@ process_irs_data_xl <- function (filepath, column_names, year) {
     replace_na(list(AGI_range = 'Total')) %>%
     mutate(year = year) %>%
     merge(zips_df) %>%
-    select(county, everything())
+    select(county, everything()) %>%
+    lapply(function(x) if(is.character(x)) tolower(x) else x) %>%
+    data.frame()
   
   #View(new_irs_data_df)
   return(new_irs_data_df)
@@ -64,6 +71,8 @@ education_xl <- read_excel('data/data_2015_district_base.xlsx')
 education_df <- data.frame(education_xl) %>%
   # filter(subgroup == 'All Students', grade == 'All Grades') %>%
   select(-year, -school, -school_name) %>%
+  lapply(function(x) if(is.character(x)) tolower(x) else x) %>%
+  data.frame() %>%
   merge(crosswalk_df) %>%
   mutate(n_bsc_and_below = round(as.numeric(pct_bsc_and_below)/100 * valid_tests), n_prof_and_above = round(as.numeric(pct_prof_adv)/100 * valid_tests)) %>%
   select(county, everything(), -system) %>%
@@ -75,13 +84,15 @@ education_df <- data.frame(education_xl) %>%
 graduation_xl <- read_excel('data/data_graduation_cohort_2015-16.xlsx', sheet = 'Graduation Cohort Data')
 
 graduation_df <- data.frame(graduation_xl) %>%
+  lapply(function(x) if(is.character(x)) tolower(x) else x) %>%
+  data.frame() %>%
   select(system = District.ID, district_name = District.Name, school_name = School.Name, graduate_count = X2015.Graduate.Count, cohort_count = X2015.Cohort.Count, graduation_rate = X2015.Graduation.Rate) %>%
   merge(crosswalk_df)
 
 
 ###########ROLLUP IRS 2015 TO COUNTY LEVEL##############
 IRS_2015_by_county_df <- IRS_data_by_year_df %>% 
-  filter(AGI_range == 'Total', year == 2015) %>% 
+  filter(AGI_range == 'total', year == 2015) %>% 
   group_by(county) %>% 
   summarize_at(vars(return_count:refund_amount), sum) %>% 
   merge(zips_df %>% group_by(county) %>% select(county, county_lat, county_lon) %>% distinct())
@@ -89,15 +100,14 @@ IRS_2015_by_county_df <- IRS_data_by_year_df %>%
 #############ROLLUP EDUCATION 2015 TO COUNTY LEVEL################
 education_by_county_2015_df <- 
   education_df %>%
-  filter(subgroup == 'All Students', grade == 'All Grades') %>%
+  filter(subgroup == 'all students', grade == 'all grades') %>%
   group_by(county, subject) %>%
   summarize_at(vars(valid_tests:n_prof_and_above), sum)
 
 
-
 #############ROLLUP GRADUATION TO COUNTY LEVEL##############
 grad_by_county_df <- graduation_df %>%
-  filter(school_name == "All Schools") %>%
+  filter(school_name == "all schools") %>%
   group_by(county) %>%
   summarize_at(vars(graduate_count, cohort_count), sum) %>%
   mutate(county_grad_rate = graduate_count/cohort_count*100)
