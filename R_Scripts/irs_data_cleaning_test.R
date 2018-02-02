@@ -182,77 +182,42 @@ IRS_2015_vs_Achievement$Unemployement_return_pct <- (IRS_2015_vs_Achievement$une
 
 IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct <- (IRS_2015_vs_Achievement$mortgage_interest_count/IRS_2015_vs_Achievement$return_count) * 100
 
-IRS_2015_vs_Achievement$Itemized_deductions_Pct <- (IRS_2015_vs_Achievement$itemized_deductions_count/IRS_2015_vs_Achievement$return_count) * 100
-
 View(IRS_2015_vs_Achievement)
 
-plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Pct_Dropout)
+##-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Pct_Dropout, main="Does Unemployment indicate Dropout Rate?", ylab="Dropout Percent", xlab="Unemployment Percent")
 
-  plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Pct_Dropout)
-  
-    plot(x=IRS_2015_vs_Achievement$Itemized_deductions_Pct, y=IRS_2015_vs_Achievement$Pct_Dropout)
-  
+  plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Pct_Expelled, main="Does Unemployment indicate Expulsion Rate?", ylab="Expulsion Percent", xlab="Unemployment Percent")
 
-plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Algebra2)
+    plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Act_Coposite, main="Does Unemployment indicate Expulsion Rate?", ylab="ACT Composite Score", xlab="Unemployment Percent")
+  
+        plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Pct_Chronically_Absent, main="Does Unemployment indicate Chronic Absentee Rate?", ylab="Chronic Absentee Percent", xlab="Unemployment Percent")
+  
+plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Pct_Dropout, main="Does Home Ownership indicate Dropout Rate?", ylab="Dropout Percent", xlab="Home Ownership Percent")
+ 
+  plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Pct_Expelled, main="Does Home Ownership indicate Expulsion Rate?", ylab="Expulsion Percent", xlab="Home Ownership Percent")
+  
+    plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Act_Coposite, main="Does Home Ownership indicate Expulsion Rate?", ylab="ACT Composite Score", xlab="Home Ownership Percent")
 
-  plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Algebra2)
-  
-    plot(x=IRS_2015_vs_Achievement$Itemized_deductions_Pct, y=IRS_2015_vs_Achievement$Algebra2)
-  
-      plot(x=IRS_2015_vs_Achievement$AGI_amount, y=IRS_2015_vs_Achievement$Act_Coposite)
+      plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Pct_Chronically_Absent, main="Does Home Ownership indicate Chronic Absentee Rate?", ylab="ACT Composite Score", xlab="Home Ownership Percent")
     
-
-plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$English3)
-
-  plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$English3)
-
-plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Chemistry)
-
-  plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Chemistry)
-
-plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Biology)
-
-  plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Biology)
-
-plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Pct_Graduated)
-
-  plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Pct_Graduated)
-
-plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Pct_Chronically_Absent)
-
-  plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Pct_Chronically_Absent)
-
-plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Act_Coposite)
-
-  plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Act_Coposite)
-
-plot(x=IRS_2015_vs_Achievement$Unemployement_return_pct, y=IRS_2015_vs_Achievement$Pct_Expelled)
-
-  plot(x=IRS_2015_vs_Achievement$Mortgage_Inrst_Ct_Pct, y=IRS_2015_vs_Achievement$Pct_Expelled)
-
-
+                
 ##Regression_Lines Enrollment------------------------------------------------------------------------------------
 
   View(graduation_df)
   View(IRS_2015_vs_Achievement)
   
-  IRS_2015_vs_Achievement$Enrollment_Black <- IRS_2015_vs_Achievement$Enrollment * (IRS_2015_vs_Achievement$Pct_Black/100)
-  IRS_2015_vs_Achievement$Pct_Graduated_Black <- (IRS_2015_vs_Achievement$graduate_count *IRS_2015_vs_Achievement$Pct_Black/100)##/(IRS_2015_vs_Achievement$Enrollment_Black)
+
+options(scipen=999)
+plot(x=IRS_2015_vs_Achievement$Enrollment, y=IRS_2015_vs_Achievement$Pct_Graduated,  main="All Demographics", ylab="Graduation Rate", xlab="Enrollment Level")
   
-  
-plot(x=IRS_2015_vs_Achievement$Enrollment_Black, y=IRS_2015_vs_Achievement$Pct_Graduated,  main="Black Demographic", ylab="Graduation Rate", xlab="Enrollment Level")
+  High_Enrollment <- 
+    IRS_2015_vs_Achievement %>%
+    filter(IRS_2015_vs_Achievement$Enrollment >= 40000)
 
-  Unemployment_Acheivement$Enrollment_Hispanic <- Unemployment_Acheivement$Enrollment * (Unemployment_Acheivement$Pct_Hispanic/100)
+  View(High_Enrollment[c("county", "Pct_Graduated")])
 
-plot(x=Unemployment_Acheivement$Enrollment_Hispanic, y=Unemployment_Acheivement$Pct_Graduated,  main="Hispanic Demographic", ylab="Graduation Rate", xlab="Enrollment Level")
 
-  Unemployment_Acheivement$Enrollment_Native_American <- Unemployment_Acheivement$Enrollment * (Unemployment_Acheivement$Pct_Native_American/100)
-
-plot(x=Unemployment_Acheivement$Enrollment_Native_American, y=Unemployment_Acheivement$Pct_Graduated,  main="Native Demographic", ylab="Graduation Rate", xlab="Enrollment Level")
-
-  Unemployment_Acheivement$Enrollment_White_Other <- Unemployment_Acheivement$Enrollment * (1 - (Unemployment_Acheivement$Pct_Blk_Hspnc_NtvAmrcn/100))
-
-plot(Unemployment_Acheivement$Enrollment_White_Other, Unemployment_Acheivement$Pct_Graduated, main="White & other", ylab="Graduation Rate", xlab="Enrollment Level")
 
 ###########DEFINE COUNTY EDUCATION DATA##################
 
@@ -298,5 +263,16 @@ TN_Map <- ggplot(Enrollment_Pool, aes(long, lat, group = county, fill = Enrollme
 
 TN_Map
 
+###########CREATE PCT GRADUATED CHOROPLETH MAP##################
 
+TN_Map <- ggplot(Enrollment_Pool, aes(long, lat, group = county, fill = Pct_Graduated)) +
+  geom_polygon() +
+  coord_equal() +
+  scale_fill_viridis(direction = -1, na.value = "gray") +
+  theme(plot.title = element_text(hjust = 0.5),axis.title.x=element_blank(),axis.title.y=element_blank(),
+        axis.text.x=element_blank(),axis.text.y=element_blank(),
+        axis.ticks.x=element_blank(),axis.ticks.y=element_blank())+
+  ggtitle("County Pct Graduation Levels")
+
+TN_Map
 
