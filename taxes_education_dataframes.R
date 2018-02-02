@@ -1,5 +1,12 @@
 library(readxl)
 library(tidyverse)
+library(maps)
+library(mapdata)
+library(plotly)
+library(ggplot2)
+library(ggmap)
+library(viridis)
+
 
 ############READ/CLEAN ZIP################
 zips_df <- read_excel('data/zip_code_database.xlsx') %>%
@@ -81,8 +88,18 @@ edu_demo_df <- read_csv('data/achievement_profile_data_with_CORE.csv') %>%
   rename(Num_Black = Pct_Black, Num_Hispanic = Pct_Hispanic, Num_Native_American = Pct_Native_American, Num_EL = Pct_EL, Num_SWD = Pct_SWD, Num_ED = Pct_ED, Num_BHN = Pct_BHN, Num_Chronically_Absent = Pct_Chronically_Absent, Num_Suspended = Pct_Suspended, Num_Expelled = Pct_Expelled) %>%
   merge(crosswalk_df) %>%
   mutate_at(vars(Num_Black:Num_Expelled), funs(round(. / 100 * Enrollment))) %>%
-  mutate(total_expend = Per_Pupil_Expenditures * Enrollment) %>%
+  mutate(total_expend = Per_Pupil_Expenditures * Enrollment) %>% 
+  mutate(per_pupil_expend = total_expend / Enrollment) %>%
+  mutate_at(vars(Num_Black:Num_Expelled), funs(. / Enrollment * 100))
+
+edu_demo_by_county_df <- read_csv('data/achievement_profile_data_with_CORE.csv') %>%
+  select(system, system_name, Per_Pupil_Expenditures, Enrollment:Pct_BHN, Pct_Chronically_Absent:Pct_Expelled) %>%
+  filter(!is.na(Enrollment)) %>%
+  #rename(Num_Black = Pct_Black, Num_Hispanic = Pct_Hispanic, Num_Native_American = Pct_Native_American, Num_EL = Pct_EL, Num_SWD = Pct_SWD, Num_ED = Pct_ED, Num_BHN = Pct_BHN, Num_Chronically_Absent = Pct_Chronically_Absent, Num_Suspended = Pct_Suspended, Num_Expelled = Pct_Expelled) %>%
+  merge(crosswalk_df) %>%
+  mutate_at(vars(Pct_Black:Pct_Expelled), funs(round(. / 100 * Enrollment))) %>%
   group_by(county) %>%
+  mutate(total_expend = Per_Pupil_Expenditures * Enrollment) %>% 
   select(county, Enrollment:total_expend) %>%
   summarize_all(sum) %>%
   mutate(per_pupil_expend = total_expend / Enrollment) %>%
@@ -141,5 +158,3 @@ education_by_county_2015_df <-
 edu_IRS_data_2015_df <- education_by_county_2015_df %>%
   merge(IRS_2015_by_county_df)
   
-  
-

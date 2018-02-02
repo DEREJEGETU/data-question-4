@@ -1,4 +1,6 @@
 source('taxes_education_dataframes.r')
+##############CORRELATIONS######################
+
 
 ##############ANALYSIS OF INCOME VS PCT OF PASSING TEST SCORES#########################
 edu_IRS_data_2015_df %>%
@@ -69,3 +71,7 @@ edu_IRS_data_2015_df %>%
   ggplot(aes(x = per_pupil_expend, y = pct_prof_and_above)) +
   geom_point(na.rm = TRUE) +
   stat_smooth(method="lm")
+
+
+
+##############MAPS######################
