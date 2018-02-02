@@ -156,5 +156,10 @@ education_by_county_2015_df <-
 
 #############MERGE ROLLED UP EDUCATION WITH IRS##################
 edu_IRS_data_2015_df <- education_by_county_2015_df %>%
-  merge(IRS_2015_by_county_df)
+  merge(IRS_2015_by_county_df) %>% 
+  mutate_at(vars(county), funs(gsub(' county', '', .)))
   
+##############MAP STUFF#########################
+TN_counties <- map_data("county", "tennessee")
+colnames(TN_counties)[6] <- "county"
+TN_counties$county <- gsub("de kalb", "dekalb", TN_counties$county, fixed = TRUE)

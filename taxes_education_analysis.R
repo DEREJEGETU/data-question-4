@@ -73,5 +73,27 @@ edu_IRS_data_2015_df %>%
   stat_smooth(method="lm")
 
 
-
 ##############MAPS######################
+mapping_edu_IRS_df <- edu_IRS_data_2015_df %>%
+  right_join(TN_counties) 
+
+options(scipen = 999)
+mapping_edu_IRS_df%>% 
+  ggplot(aes(x = long, y = lat, group = county, fill = Enrollment)) +
+  geom_polygon() +
+  coord_equal() +
+  scale_fill_viridis(direction = -1, na.value = "gray") +
+  theme(plot.title = element_text(hjust = 0.5),axis.title.x=element_blank(),axis.title.y=element_blank(),
+        axis.text.x=element_blank(),axis.text.y=element_blank(),
+        axis.ticks.x=element_blank(),axis.ticks.y=element_blank())+
+  ggtitle("County Enrollment")
+
+mapping_edu_IRS_df %>% 
+  ggplot(aes(x = long, y = lat, group = county, fill = pct_prof_and_above)) +
+  geom_polygon() +
+  coord_equal() +
+  scale_fill_viridis(direction = -1, na.value = "gray") +
+  theme(plot.title = element_text(hjust = 0.5),axis.title.x=element_blank(),axis.title.y=element_blank(),
+        axis.text.x=element_blank(),axis.text.y=element_blank(),
+        axis.ticks.x=element_blank(),axis.ticks.y=element_blank())+
+  ggtitle("Percentage of Assessments Passed")
