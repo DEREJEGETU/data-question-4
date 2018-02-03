@@ -6,7 +6,7 @@ library(plotly)
 library(ggplot2)
 library(ggmap)
 library(viridis)
-
+library(GGally)
 
 ############READ/CLEAN ZIP################
 zips_df <- read_excel('data/zip_code_database.xlsx') %>%
