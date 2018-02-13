@@ -11,6 +11,7 @@ mapping_edu_IRS_df <- edu_IRS_data_2015_df %>%
 
 options(scipen = 999)
 
+
 ##############MAPS FOR INCOME######################
 mapping_edu_IRS_df%>% 
   ggplot(aes(x = long, y = lat, group = county, fill = avg_AGI_per_return)) +
@@ -94,15 +95,15 @@ mapping_edu_IRS_df %>%
   ggtitle("Per Pupil Expenditures")
 
 ##############CORRELATIONS######################
-# edu_IRS_data_2015_df %>% 
-#   select(contains('pct'), county_grad_rate, per_pupil_expend) %>% 
-#   ggcorr(type = "lower", 
-#          #lab = TRUE, 
-#          #lab_size = 3, 
-#          #method="circle", 
-#          colors = c("tomato2", "white", "springgreen3"), 
-#          title="Correlogram of Education/Income Data", 
-#          ggtheme=theme_bw)
+edu_IRS_data_2015_df %>%
+  select(contains('pct'), county_grad_rate, per_pupil_expend) %>%
+  ggcorr(type = "lower",
+         #lab = TRUE,
+         #lab_size = 3,
+         #method="circle",
+         colors = c("tomato2", "white", "springgreen3"),
+         title="Correlogram of Education/Income Data",
+         ggtheme=theme_bw)
 
 #-----Based on this chart, it looks like I should analyze:
 # * pct_bsc_and_below ~ Pct_ED
@@ -156,6 +157,8 @@ edu_IRS_data_2015_df %>%
 #-------------------------------------------------------------------
 
 #############Expenditures Per Pupil Compared to Average#######################
+
+
 edu_IRS_data_2015_df$per_pupil_expend_z <- round((edu_IRS_data_2015_df$per_pupil_expend - mean(edu_IRS_data_2015_df$per_pupil_expend))/sd(edu_IRS_data_2015_df$per_pupil_expend), 2)  # compute normalized mpg
 edu_IRS_data_2015_df$per_pupil_expend_type <- ifelse(edu_IRS_data_2015_df$per_pupil_expend_z < 0, "below", "above")  # above / below avg flag
 edu_IRS_data_2015_df <- edu_IRS_data_2015_df[order(edu_IRS_data_2015_df$per_pupil_expend_z), ]  # sort
@@ -169,3 +172,23 @@ ggplot(edu_IRS_data_2015_df, aes(x=`county`, y=per_pupil_expend_z, label=per_pup
                     values = c("above"="#00ba38", "below"="#f8766d")) + 
   labs(subtitle="Normalized Per Pupil Expenditures") + 
   coord_flip()
+
+
+
+edu_IRS_data_2015_df$pct_prof_and_above_z <- round((edu_IRS_data_2015_df$per_pupil_expend - mean(edu_IRS_data_2015_df$per_pupil_expend))/sd(edu_IRS_data_2015_df$per_pupil_expend), 2)  # compute normalized mpg
+edu_IRS_data_2015_df$per_pupil_expend_type <- ifelse(edu_IRS_data_2015_df$per_pupil_expend_z < 0, "below", "above")  # above / below avg flag
+edu_IRS_data_2015_df <- edu_IRS_data_2015_df[order(edu_IRS_data_2015_df$per_pupil_expend_z), ]  # sort
+edu_IRS_data_2015_df$`county` <- factor(edu_IRS_data_2015_df$`county`, levels = edu_IRS_data_2015_df$`county`)  # convert to factor to retain sorted order in plot.
+
+# Diverging Barcharts
+ggplot(edu_IRS_data_2015_df, aes(x=`county`, y=per_pupil_expend_z, label=per_pupil_expend_z)) + 
+  geom_bar(stat='identity', aes(fill=per_pupil_expend_type), width=.5)  +
+  scale_fill_manual(name="Per Pupil Expenditures", 
+                    labels = c("Above Average", "Below Average"), 
+                    values = c("above"="#00ba38", "below"="#f8766d")) + 
+  labs(subtitle="Normalized Per Pupil Expenditures") + 
+  coord_flip()
+
+
+
+

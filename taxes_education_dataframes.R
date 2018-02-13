@@ -127,7 +127,8 @@ IRS_2015_by_county_df <- IRS_data_by_year_df %>%
          farms_pct = farm_income_count / return_count * 100,
          unemployment_pct = unemployment_income_count / return_count * 100,
          taxable_income_pct = taxable_income_count / return_count * 100,
-         char_contrib_pct = charitable_contributions_count / return_count * 100)
+         char_contrib_pct = charitable_contributions_count / return_count * 100,
+         hh_to_joint_ratio = head_house_return_count/joint_return_count)
 
 #############ROLLUP GRADUATION TO COUNTY LEVEL##############
 grad_by_county_df <- graduation_df %>%

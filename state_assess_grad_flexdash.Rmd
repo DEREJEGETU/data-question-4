@@ -1,0 +1,244 @@
+---
+title: "Analysis of Standardized Testing and Graduation Rates in Tennessee (2015)"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: united
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(choroplethr)
+source('taxes_education_dataframes.r')
+
+mapping_edu_IRS_df <- edu_IRS_data_2015_df %>%
+  right_join(TN_counties) 
+
+options(scipen = 999)
+```
+
+Analysis{.storyboard}
+=========================================
+### <b><u>State Assessments</u>:</b> How do the counties compare in their performances on tests like Algebra I, Chemistry, English III, Reading/Language Arts, etc.?
+
+```{r}
+p <- ggplot(mapping_edu_IRS_df, 
+             aes(long, lat, group = county, text = paste('<b>', toupper(county), ' COUNTY</b>',
+                                                         "<br> % Passed: ", round(pct_prof_and_above,1)))) +
+   geom_polygon(aes(fill = round(pct_prof_and_above,1)), 
+                colour = alpha("white", 1/2), size = 0.1)  +
+   coord_fixed() +
+   theme_void() +
+   theme(legend.position = 'bottom') +
+   scale_fill_continuous(name = "State Assessments <br> Passed (%)")
+
+p <- ggplotly(p,
+          tooltip = 'text') %>%
+  layout(
+    #autosize = F, 
+    #width = 1100, 
+    #height = 500,
+    title = "Percentage of State Assessments Passed By County <br> (All Subjects)",
+    titlefont = list(size = 30),
+    margin = list(
+        l = 60,
+        r = 20,
+        b = 20,
+        t = 100,
+        pad = 2
+    )
+  ) 
+
+p2 <- ggplot(edu_IRS_data_2015_df, aes(round(pct_prof_and_above,1)),
+             text = "Counties: ") + 
+  geom_histogram(binwidth = 2, aes(fill = ..x..)) +
+  theme(legend.position = 'none')
+  
+p2 <- ggplotly(p2, 
+               tooltip = 'text') %>%
+  layout(
+   margin = list(
+        l = 60,
+        r = 20,
+        b = 50,
+        t = 100,
+        pad = 2
+    ),
+    xaxis = list(
+      title = "% of Assessments Passed"
+    ),
+    yaxis = list(
+      title = "Number of Counties",
+      showgrid = FALSE
+    ),
+    showlegend = FALSE
+  )
+  
+subplot(p, p2, nrows = 2, heights = c(.55, .45), titleX = TRUE, titleY = TRUE)
+```
+
+***
+
+The county with the lowest percentage of state assessments passed was Hancock County with 34.4%.
+
+***
+
+The county with the highest percentage of state assessments passed was Williamson County with 84.0%.
+
+***
+
+Over the entire state of Tennessee, the percentage of state assessments passed was 55.6%.
+
+***
+
+The distribution of state assessment passing percentages is quite normally distributed.
+
+***
+
+Smith, Putnam, Cannon, Warren, and Marion County values were not reported on the Department of Education's website.
+
+
+### <b><u>Graduation</u>:</b> How do the counties compare in their graduation rates?
+
+```{r}
+p <- ggplot(mapping_edu_IRS_df, 
+             aes(long, lat, group = county, text = paste('<b>', toupper(county), ' COUNTY</b>',
+                                                         "<br> % Graduated: ", round(county_grad_rate,1)))) +
+   geom_polygon(aes(fill = round(county_grad_rate,1)), 
+                colour = alpha("white", 1/2), size = 0.1)  +
+   coord_fixed() +
+   theme_void() +
+   theme(legend.position = 'bottom') +
+   scale_fill_continuous(name = "Graduation Rate (%)")
+
+p <- ggplotly(p,
+          tooltip = 'text') %>%
+  layout(
+    #autosize = F, 
+    #width = 1100, 
+    #height = 500,
+    title = "Graduation Rates By County",
+    titlefont = list(size = 30),
+    margin = list(
+        l = 60,
+        r = 20,
+        b = 20,
+        t = 100,
+        pad = 2
+    )
+  ) 
+
+p2 <- ggplot(edu_IRS_data_2015_df, aes(round(county_grad_rate,1)),
+             text = "Counties: ") + 
+  geom_histogram(binwidth = 1, aes(fill = ..x..)) +
+  theme(legend.position = 'none')
+  
+p2 <- ggplotly(p2, 
+               tooltip = 'text') %>%
+  layout(
+    #title = "Percentage of State Assessments Passed By County <br> (All Subjects)",
+    #titlefont = list(size = 30),
+    margin = list(
+        l = 60,
+        r = 20,
+        b = 50,
+        t = 100,
+        pad = 2
+    ),
+    xaxis = list(
+      title = "Graduation Rate (%)"
+    ),
+    yaxis = list(
+      title = "Number of Counties",
+      showgrid = FALSE
+    ),
+    showlegend = FALSE
+  )
+  
+subplot(p, p2, nrows = 2, heights = c(.55, .45), titleX = TRUE, titleY = TRUE)
+```
+
+***
+
+The county with the lowest graduation rate was Shelby County with 76.6%.
+
+***
+
+The county with the highest graduation rate was Lauderdale County with 99.1%.
+
+***
+
+Over the entire state of Tennessee, the percentage of state assessments passed was 87.3%.
+
+***
+
+The distribution of state assessment passing percentages is not normally distributed. There is a large spike in frequencies at around the 90% mark.
+
+***
+
+Coffee County graduation rates could not be obtained.
+
+### <b><u>Correlations/Differences</u>:</b> Is there a correlation between performance on state assessments and graduation rates?
+
+```{r}
+linearmodel <- lm(county_grad_rate ~ pct_prof_and_above, data = edu_IRS_data_2015_df)
+
+p <- ggplot(edu_IRS_data_2015_df,
+            aes(x = edu_IRS_data_2015_df$pct_prof_and_above,
+                y = edu_IRS_data_2015_df$county_grad_rate,
+                text = paste('<b>', toupper(county), ' COUNTY</b>',
+                      "<br> % Passed: ", round(pct_prof_and_above,1),
+                      "<br> % Graduated: ", round(county_grad_rate,1)))) +
+  geom_point(na.rm = TRUE) +
+  geom_abline(slope = linearmodel$coefficients['pct_prof_and_above'],
+              intercept = linearmodel$coefficients['(Intercept)']) +
+  annotate('rect', xmin = 75, xmax = 85, ymin = 78, ymax = 82) +
+  annotate('text', x = 80, y = 80, color = 'white', 
+           label = sprintf('R^2 = %.2f', 
+                           cor(edu_IRS_data_2015_df$county_grad_rate, 
+                               edu_IRS_data_2015_df$pct_prof_and_above, 
+                               use = 'pairwise.complete.obs')))
+
+ggplotly(p, tooltip = 'text') %>% 
+  layout(
+    title = "State Assessment Success vs. Graduation Rate",
+    titlefont = list(size = 30),
+    margin = list(
+        l = 60,
+        r = 20,
+        b = 50,
+        t = 100,
+        pad = 2
+    ),
+    xaxis = list(
+      title = "% of Assessments Passed"
+    ),
+    yaxis = list(
+      title = "% of Students Graduated"
+    )
+  )
+```
+
+***
+
+<b>Conclusions:</b>
+<p>There is a relatively weak positive correlation between performance on state tests and graduation rates at the county level. There are some obvious outliers. Most notably, Van Buren, Clay, Morgan, Pickett, and Wayne Counties all had 50% or less pass rates on their state assessments, but yet they graduated at a rate of 95% or better.</p>
+
+<p>The weakness of the correlation suggests there are other factors in play that affect graduation beyond competency on standardized tests. This fits with the current grading model, whereby standardized tests count for 25% of a student's grade in a course; even if a student fails a state assessment, he/she can still do well enough in the rest of the course to earn the credit.</p>
+
+Methodology
+=============================================
+<h3>Data Sources</h3>
+<ul>
+<li>All data comes from the Tennessee Department of Education website (https://www.tn.gov/education/data/data-downloads.html).</li>
+</ul>
+
+<h3>Calculations</h3>
+<ul>
+<li>Assessment percentages are calculated by aggregating the number of passed tests for all subjects by county, then aggregating the total number of valid tests taken by county, and then dividign the former by the latter. For some districts, the raw number of passing scores was obfuscated because of privacy concerns surrounding small sample sizes, but that number was able to be calculated based on given percentages of passing scores within that district.</li>
+<li>Graduation percentages are calculated by aggregating the total number of graduating seniors by county, then aggregating the total number of students in each cohort by county, then dividing the former by the latter.</li>
+</ul>
+
+<h3>Assumptions</h3>
+<ul>
+<li>The author understands that he is comparing apples to oranges in trying to correlate states assessments with graduation rates, because most of those who are taking the state assessments are not graduating within the same school year. (Most seniors, e.g., are not taking Algebra I, and none of them are taking middle school reading/language arts.) However, because of limited access to prior years' data, the author assumes that performance on state assessments has stayed fairly consistent over the last few years.</li>
+</ul>
